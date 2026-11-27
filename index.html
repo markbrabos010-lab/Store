@@ -1,170 +1,143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>متجري</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Tahoma, Arial, sans-serif; background: #f5f6fa; color: #333; }
-
-    header {
-      background: #2d3436; color: #fff; padding: 15px 30px;
-      display: flex; justify-content: space-between; align-items: center;
-      position: sticky; top: 0; z-index: 10;
-    }
-    header h1 { font-size: 24px; }
-    .cart-btn {
-      background: #00b894; border: none; color: #fff; padding: 10px 18px;
-      border-radius: 8px; cursor: pointer; font-size: 16px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, #6c5ce7, #00b894);
-      color: #fff; text-align: center; padding: 60px 20px;
-    }
-    .hero h2 { font-size: 36px; margin-bottom: 10px; }
-
-    .products {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 20px; padding: 30px; max-width: 1200px; margin: auto;
-    }
-    .card {
-      background: #fff; border-radius: 12px; overflow: hidden;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08); transition: .3s;
-    }
-    .card:hover { transform: translateY(-5px); }
-    .card img { width: 100%; height: 200px; object-fit: cover; }
-    .card-body { padding: 15px; }
-    .card-body h3 { margin-bottom: 8px; }
-    .price { color: #00b894; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-    .add-btn {
-      width: 100%; background: #6c5ce7; color: #fff; border: none;
-      padding: 10px; border-radius: 8px; cursor: pointer; font-size: 15px;
-    }
-    .add-btn:hover { background: #5a4bd1; }
-
-    .cart {
-      position: fixed; top: 0; left: -400px; width: 360px; max-width: 100%;
-      height: 100%; background: #fff; box-shadow: 2px 0 15px rgba(0,0,0,0.2);
-      padding: 20px; transition: .3s; z-index: 20; overflow-y: auto;
-    }
-    .cart.open { left: 0; }
-    .cart-item {
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #eee; padding: 10px 0;
-    }
-    .qty button {
-      width: 26px; height: 26px; border: none; background: #dfe6e9;
-      border-radius: 5px; cursor: pointer;
-    }
-    .total { font-size: 20px; font-weight: bold; margin: 20px 0; }
-    .checkout {
-      width: 100%; background: #25d366; color: #fff; border: none;
-      padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;
-    }
-    .close { float: left; cursor: pointer; font-size: 22px; }
-
-    footer { background: #2d3436; color: #fff; text-align: center; padding: 20px; margin-top: 30px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مدار — رحلة بين الكواكب</title>
+<style>
+  :root { color-scheme: dark; --accent: #78c8ff; --shade: #173ba5; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100svh; color: #f6f7ff;
+    background: #070913; font-family: system-ui, sans-serif;
+  }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .wrap { position: relative; max-width: 1120px; margin: auto; padding: 28px 24px; }
+  header { display: flex; justify-content: space-between; align-items: center; }
+  header strong { font-size: 1.5rem; }
+  .muted { color: #aeb8d2; }
+  main {
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+    gap: 36px; min-height: 72svh;
+  }
+  h1 { font-size: clamp(4rem, 10vw, 8rem); margin: 0; line-height: 1.15; }
+  p { line-height: 1.9; }
+  .eyebrow, .stat strong { color: var(--accent); }
+  .stats, nav { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stat, button {
+    border: 1px solid #ffffff28; background: #ffffff08;
+    border-radius: 14px; padding: 11px 16px;
+  }
+  .stat strong { display: block; margin-top: 4px; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:hover, button[aria-pressed="true"] { border-color: var(--accent); }
+  button[aria-pressed="true"] { background: var(--accent); color: #070913; }
+  button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+  .stage {
+    position: relative; isolation: isolate; display: grid; place-items: center;
+    aspect-ratio: 1; width: min(100%, 430px); margin: auto;
+  }
+  .orbit {
+    position: absolute; width: 96%; height: 40%;
+    border: 1px solid #ffffff37; border-radius: 50%; transform: rotate(-25deg);
+  }
+  .orbit:nth-child(2) { width: 112%; height: 54%; opacity: .5; }
+  .planet {
+    width: 58%; aspect-ratio: 1; border-radius: 50%;
+    background:
+      radial-gradient(circle at 29% 24%, #fff9, transparent 27%),
+      repeating-linear-gradient(158deg, transparent 0 13px, #090d3829 16px 22px),
+      radial-gradient(circle at 32% 28%, var(--accent), var(--shade) 57%, #070913 83%);
+    box-shadow: inset -18px -22px 42px #0009, 0 0 65px -8px var(--accent);
+  }
+  .arrive { animation: arrive .55s ease-out; }
+  @keyframes arrive {
+    from { opacity: .35; transform: scale(.91); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @media (max-width: 680px) {
+    main { grid-template-columns: 1fr; gap: 10px; padding: 28px 0; }
+    .stage { grid-row: 1; width: min(76%, 290px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .arrive { animation: none; } }
+</style>
 </head>
 <body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header><strong>◉ مدار</strong><span class="muted">أطلس النظام الشمسي</span></header>
+  <main>
+    <section aria-live="polite" aria-atomic="true">
+      <p class="eyebrow" id="tag"></p>
+      <h1 id="name"></h1>
+      <p class="muted" id="description"></p>
+      <div class="stats">
+        <div class="stat">ترتيبه من الشمس<strong id="order"></strong></div>
+        <div class="stat">نوع الكوكب<strong id="kind"></strong></div>
+      </div>
+    </section>
+    <div class="stage" aria-hidden="true">
+      <div class="orbit"></div><div class="orbit"></div><div class="planet"></div>
+    </div>
+  </main>
+  <nav id="picker" aria-label="اختر كوكبًا"></nav>
+</div>
+<script>
+const planets = [
+  ['عطارد', 'الأقرب إلى الشمس', 'سطحه الصخري مليء بالفوهات، ويشبه سطح القمر.', '#d5c7b9', '#645349', 'صخري'],
+  ['الزهرة', 'تحت غطاء من السحب', 'يحبس غلافه الجوي الكثيف الحرارة، ما يجعله أشد الكواكب حرارة.', '#ffcf81', '#a05632', 'صخري'],
+  ['الأرض', 'الكوكب الأزرق', 'تغطي المحيطات معظم سطحه، وهو عالمنا الوحيد المعروف بوجود الحياة.', '#78c8ff', '#173ba5', 'صخري'],
+  ['المريخ', 'الكوكب الأحمر', 'تعطي أكاسيد الحديد غباره لونه الأحمر المميز.', '#ff9873', '#8b2f28', 'صخري'],
+  ['المشتري', 'عملاق النظام الشمسي', 'أكبر كواكب النظام الشمسي، وتظهر في غلافه الجوي عاصفة تُعرف بالبقعة الحمراء العظيمة.', '#ffc69c', '#8d5144', 'عملاق غازي'],
+  ['زحل', 'سيد الحلقات', 'تتكون حلقاته المميزة من قطع جليدية وصخرية تتفاوت في الحجم.', '#fbe0a0', '#8a673c', 'عملاق غازي'],
+  ['أورانوس', 'يدور على جانبه', 'يميل محور دورانه بشدة، فيبدو كأنه يتدحرج حول الشمس.', '#a6f5ea', '#267b89', 'عملاق جليدي'],
+  ['نبتون', 'في أقاصي النظام الشمسي', 'أبعد الكواكب عن الشمس، وتهب في غلافه الجوي رياح شديدة السرعة.', '#8b9fff', '#292997', 'عملاق جليدي']
+];
+const el = id => document.getElementById(id);
+const globe = document.querySelector('.planet');
+const buttons = planets.map(([name], i) => {
+  const button = document.createElement('button');
+  button.textContent = name;
+  button.addEventListener('click', () => select(i));
+  el('picker').append(button);
+  return button;
+});
 
-  <header>
-    <h1>🛍️ متجري</h1>
-    <button class="cart-btn" onclick="toggleCart()">🛒 السلة (<span id="count">0</span>)</button>
-  </header>
+function select(i) {
+  const [name, tag, description, accent, shade, kind] = planets[i];
+  Object.entries({
+    name, tag, description, kind,
+    order: new Intl.NumberFormat('ar').format(i + 1)
+  }).forEach(([id, value]) => { el(id).textContent = value; });
+  document.documentElement.style.setProperty('--accent', accent);
+  document.documentElement.style.setProperty('--shade', shade);
+  buttons.forEach((button, j) => button.setAttribute('aria-pressed', String(i === j)));
+  globe.classList.remove('arrive');
+  void globe.offsetWidth;
+  globe.classList.add('arrive');
+}
+select(2);
 
-  <section class="hero">
-    <h2>مرحباً بك في متجرنا</h2>
-    <p>أفضل المنتجات بأفضل الأسعار</p>
-  </section>
-
-  <main class="products" id="products"></main>
-
-  <aside class="cart" id="cart">
-    <span class="close" onclick="toggleCart()">✖</span>
-    <h2>سلة المشتريات</h2>
-    <div id="cart-items"></div>
-    <div class="total">المجموع: <span id="total">0</span> $</div>
-    <button class="checkout" onclick="checkout()">إتمام الطلب عبر واتساب</button>
-  </aside>
-
-  <footer>© 2026 متجري - جميع الحقوق محفوظة</footer>
-
-  <script>
-    // ✏️ عدّل المنتجات من هنا
-    const products = [
-      { id: 1, name: "ساعة ذكية", price: 49, img: "https://picsum.photos/seed/watch/400/300" },
-      { id: 2, name: "سماعات لاسلكية", price: 29, img: "https://picsum.photos/seed/headphones/400/300" },
-      { id: 3, name: "حقيبة ظهر", price: 35, img: "https://picsum.photos/seed/bag/400/300" },
-      { id: 4, name: "نظارة شمسية", price: 19, img: "https://picsum.photos/seed/glasses/400/300" },
-      { id: 5, name: "حذاء رياضي", price: 59, img: "https://picsum.photos/seed/shoes/400/300" },
-      { id: 6, name: "كوب حراري", price: 12, img: "https://picsum.photos/seed/cup/400/300" }
-    ];
-
-    // ✏️ ضع رقم واتساب الخاص بك (بدون + أو أصفار في البداية)
-    const WHATSAPP = "966500000000";
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    function renderProducts() {
-      document.getElementById("products").innerHTML = products.map(p => `
-        <div class="card">
-          <img src="${p.img}" alt="${p.name}">
-          <div class="card-body">
-            <h3>${p.name}</h3>
-            <div class="price">${p.price} $</div>
-            <button class="add-btn" onclick="addToCart(${p.id})">أضف إلى السلة</button>
-          </div>
-        </div>`).join("");
-    }
-
-    function addToCart(id) {
-      const item = cart.find(i => i.id === id);
-      if (item) item.qty++;
-      else cart.push({ ...products.find(p => p.id === id), qty: 1 });
-      update();
-    }
-
-    function changeQty(id, d) {
-      const item = cart.find(i => i.id === id);
-      item.qty += d;
-      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
-      update();
-    }
-
-    function update() {
-      localStorage.setItem("cart", JSON.stringify(cart));
-      document.getElementById("count").textContent = cart.reduce((s, i) => s + i.qty, 0);
-      document.getElementById("total").textContent = cart.reduce((s, i) => s + i.qty * i.price, 0);
-      document.getElementById("cart-items").innerHTML = cart.length
-        ? cart.map(i => `
-          <div class="cart-item">
-            <div><b>${i.name}</b><br>${i.price} $</div>
-            <div class="qty">
-              <button onclick="changeQty(${i.id},1)">+</button>
-              ${i.qty}
-              <button onclick="changeQty(${i.id},-1)">-</button>
-            </div>
-          </div>`).join("")
-        : "<p style='margin-top:20px'>السلة فارغة</p>";
-    }
-
-    function toggleCart() {
-      document.getElementById("cart").classList.toggle("open");
-    }
-
-    function checkout() {
-      if (!cart.length) return alert("السلة فارغة!");
-      let msg = "مرحباً، أريد طلب:\n";
-      cart.forEach(i => msg += `- ${i.name} × ${i.qty} = ${i.qty * i.price}$\n`);
-      msg += `المجموع: ${cart.reduce((s, i) => s + i.qty * i.price, 0)}$`;
-      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`);
-    }
-
-    renderProducts();
-    update();
-  </script>
+const sky = el('sky');
+const ctx = sky.getContext('2d');
+const stars = Array.from({ length: 180 }, () =>
+  [Math.random(), Math.random(), .3 + Math.random() * 1.1, .15 + Math.random() * .65]
+);
+function drawSky() {
+  const { width, height } = sky.getBoundingClientRect();
+  const scale = Math.min(devicePixelRatio || 1, 2);
+  sky.width = width * scale;
+  sky.height = height * scale;
+  ctx.scale(scale, scale);
+  for (const [x, y, r, opacity] of stars) {
+    ctx.fillStyle = `rgba(220,232,255,${opacity})`;
+    ctx.beginPath();
+    ctx.arc(x * width, y * height, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+drawSky();
+addEventListener('resize', drawSky);
+</script>
 </body>
 </html>
