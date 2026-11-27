@@ -1,143 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مدار — رحلة بين الكواكب</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>موقعي | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: dark; --accent: #78c8ff; --shade: #173ba5; }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100svh; color: #f6f7ff;
-    background: #070913; font-family: system-ui, sans-serif;
+  :root{
+    --bg:#0a0a1a; --card:rgba(255,255,255,0.05); --text:#e8e8ff; --muted:#9a9ac0;
+    --a1:#7c3aed; --a2:#06b6d4; --a3:#ec4899; --border:rgba(255,255,255,0.1);
   }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .wrap { position: relative; max-width: 1120px; margin: auto; padding: 28px 24px; }
-  header { display: flex; justify-content: space-between; align-items: center; }
-  header strong { font-size: 1.5rem; }
-  .muted { color: #aeb8d2; }
-  main {
-    display: grid; grid-template-columns: 1fr 1fr; align-items: center;
-    gap: 36px; min-height: 72svh;
+  body.light{
+    --bg:#f3f4ff; --card:rgba(255,255,255,0.7); --text:#1a1a3a; --muted:#5a5a80;
+    --border:rgba(0,0,0,0.08);
   }
-  h1 { font-size: clamp(4rem, 10vw, 8rem); margin: 0; line-height: 1.15; }
-  p { line-height: 1.9; }
-  .eyebrow, .stat strong { color: var(--accent); }
-  .stats, nav { display: flex; flex-wrap: wrap; gap: 10px; }
-  .stat, button {
-    border: 1px solid #ffffff28; background: #ffffff08;
-    border-radius: 14px; padding: 11px 16px;
-  }
-  .stat strong { display: block; margin-top: 4px; }
-  button { font: inherit; color: inherit; cursor: pointer; }
-  button:hover, button[aria-pressed="true"] { border-color: var(--accent); }
-  button[aria-pressed="true"] { background: var(--accent); color: #070913; }
-  button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
-  .stage {
-    position: relative; isolation: isolate; display: grid; place-items: center;
-    aspect-ratio: 1; width: min(100%, 430px); margin: auto;
-  }
-  .orbit {
-    position: absolute; width: 96%; height: 40%;
-    border: 1px solid #ffffff37; border-radius: 50%; transform: rotate(-25deg);
-  }
-  .orbit:nth-child(2) { width: 112%; height: 54%; opacity: .5; }
-  .planet {
-    width: 58%; aspect-ratio: 1; border-radius: 50%;
-    background:
-      radial-gradient(circle at 29% 24%, #fff9, transparent 27%),
-      repeating-linear-gradient(158deg, transparent 0 13px, #090d3829 16px 22px),
-      radial-gradient(circle at 32% 28%, var(--accent), var(--shade) 57%, #070913 83%);
-    box-shadow: inset -18px -22px 42px #0009, 0 0 65px -8px var(--accent);
-  }
-  .arrive { animation: arrive .55s ease-out; }
-  @keyframes arrive {
-    from { opacity: .35; transform: scale(.91); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @media (max-width: 680px) {
-    main { grid-template-columns: 1fr; gap: 10px; padding: 28px 0; }
-    .stage { grid-row: 1; width: min(76%, 290px); }
-  }
-  @media (prefers-reduced-motion: reduce) { .arrive { animation: none; } }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .5s,color .5s}
+  #particles{position:fixed;inset:0;z-index:-1}
+  #progress{position:fixed;top:0;right:0;height:4px;width:0;z-index:1000;
+    background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3))}
+
+  /* Navbar */
+  nav{position:fixed;top:0;width:100%;padding:18px 6%;display:flex;justify-content:space-between;align-items:center;
+    z-index:100;backdrop-filter:blur(14px);background:rgba(10,10,26,0.4);border-bottom:1px solid var(--border);transition:.4s}
+  body.light nav{background:rgba(255,255,255,0.5)}
+  .logo{font-size:1.6rem;font-weight:900;background:linear-gradient(90deg,var(--a1),var(--a2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav ul{display:flex;gap:28px;list-style:none}
+  nav a{color:var(--text);text-decoration:none;font-weight:500;position:relative}
+  nav a::after{content:'';position:absolute;bottom:-5px;right:0;width:0;height:2px;background:var(--a2);transition:.3s}
+  nav a:hover::after{width:100%}
+  .toggle{background:var(--card);border:1px solid var(--border);color:var(--text);width:42px;height:42px;
+    border-radius:50%;cursor:pointer;font-size:1.2rem;transition:.3s}
+  .toggle:hover{transform:rotate(180deg)}
+
+  /* Hero */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6%}
+  .hero h1{font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1.2}
+  .grad{background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3),var(--a1));background-size:300%;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:flow 6s linear infinite}
+  @keyframes flow{to{background-position:300%}}
+  .typing{font-size:clamp(1.2rem,3vw,2rem);color:var(--muted);margin:20px 0 40px;min-height:3rem}
+  .cursor{display:inline-block;width:3px;background:var(--a2);animation:blink 1s infinite;margin-right:4px}
+  @keyframes blink{50%{opacity:0}}
+  .btn{padding:15px 40px;border-radius:50px;border:none;font-family:inherit;font-size:1.1rem;font-weight:700;
+    cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2));text-decoration:none;
+    box-shadow:0 10px 40px rgba(124,58,237,.4);transition:.3s;display:inline-block}
+  .btn:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 15px 50px rgba(6,182,212,.5)}
+  .btn.outline{background:transparent;border:2px solid var(--a2);color:var(--text);box-shadow:none;margin-right:15px}
+
+  /* Sections */
+  section{padding:110px 6%}
+  .title{text-align:center;font-size:2.6rem;font-weight:900;margin-bottom:60px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:30px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:35px;
+    backdrop-filter:blur(10px);transition:transform .15s,box-shadow .3s;transform-style:preserve-3d}
+  .card:hover{box-shadow:0 20px 60px rgba(124,58,237,.25)}
+  .card .icon{font-size:2.8rem;margin-bottom:18px}
+  .card h3{font-size:1.4rem;margin-bottom:10px}
+  .card p{color:var(--muted);line-height:1.8}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:25px;text-align:center}
+  .stat h2{font-size:3.2rem;font-weight:900}
+  .stat p{color:var(--muted)}
+
+  /* Skills */
+  .skill{margin-bottom:28px}
+  .skill-head{display:flex;justify-content:space-between;margin-bottom:8px;font-weight:700}
+  .bar{height:12px;background:var(--card);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+  .fill{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width 1.8s ease}
+
+  /* Contact */
+  form{max-width:600px;margin:auto;display:flex;flex-direction:column;gap:18px}
+  input,textarea{padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--card);
+    color:var(--text);font-family:inherit;font-size:1rem;outline:none;transition:.3s}
+  input:focus,textarea:focus{border-color:var(--a2);box-shadow:0 0 20px rgba(6,182,212,.3)}
+
+  footer{text-align:center;padding:40px;color:var(--muted);border-top:1px solid var(--border)}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(60px);transition:1s ease}
+  .reveal.show{opacity:1;transform:none}
+
+  #top{position:fixed;bottom:30px;left:30px;width:50px;height:50px;border-radius:50%;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:1.4rem;opacity:0;pointer-events:none;transition:.4s}
+  #top.show{opacity:1;pointer-events:auto}
+
+  #toast{position:fixed;bottom:-100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--a1),var(--a2));
+    color:#fff;padding:16px 32px;border-radius:50px;transition:.5s;font-weight:700;z-index:999}
+  #toast.show{bottom:40px}
+
+  @media(max-width:768px){nav ul{display:none}.btn.outline{margin:15px 0 0}}
 </style>
 </head>
 <body>
-<canvas id="sky" aria-hidden="true"></canvas>
-<div class="wrap">
-  <header><strong>◉ مدار</strong><span class="muted">أطلس النظام الشمسي</span></header>
-  <main>
-    <section aria-live="polite" aria-atomic="true">
-      <p class="eyebrow" id="tag"></p>
-      <h1 id="name"></h1>
-      <p class="muted" id="description"></p>
-      <div class="stats">
-        <div class="stat">ترتيبه من الشمس<strong id="order"></strong></div>
-        <div class="stat">نوع الكوكب<strong id="kind"></strong></div>
-      </div>
-    </section>
-    <div class="stage" aria-hidden="true">
-      <div class="orbit"></div><div class="orbit"></div><div class="planet"></div>
-    </div>
-  </main>
-  <nav id="picker" aria-label="اختر كوكبًا"></nav>
-</div>
+<canvas id="particles"></canvas>
+<div id="progress"></div>
+
+<nav>
+  <div class="logo">⚡ MyBrand</div>
+  <ul>
+    <li><a href="#home">الرئيسية</a></li>
+    <li><a href="#services">الخدمات</a></li>
+    <li><a href="#skills">المهارات</a></li>
+    <li><a href="#contact">تواصل</a></li>
+  </ul>
+  <button class="toggle" id="themeBtn">🌙</button>
+</nav>
+
+<!-- Hero -->
+<header class="hero" id="home">
+  <h1>مرحباً، أنا <span class="grad">مطوّر مبدع</span></h1>
+  <div class="typing"><span id="typed"></span><span class="cursor">&nbsp;</span></div>
+  <div>
+    <a href="#services" class="btn">استكشف أعمالي</a>
+    <a href="#contact" class="btn outline">تواصل معي</a>
+  </div>
+</header>
+
+<!-- Services -->
+<section id="services">
+  <h2 class="title reveal">ماذا <span class="grad">أقدّم</span></h2>
+  <div class="grid">
+    <div class="card reveal"><div class="icon">🎨</div><h3>تصميم واجهات</h3><p>تصاميم عصرية وجذابة تأسر المستخدم من النظرة الأولى.</p></div>
+    <div class="card reveal"><div class="icon">💻</div><h3>تطوير مواقع</h3><p>مواقع سريعة ومتجاوبة باستخدام أحدث التقنيات.</p></div>
+    <div class="card reveal"><div class="icon">📱</div><h3>تطبيقات جوال</h3><p>تطبيقات سلسة تعمل على أندرويد و iOS.</p></div>
+    <div class="card reveal"><div class="icon">🤖</div><h3>ذكاء اصطناعي</h3><p>حلول ذكية تؤتمت أعمالك وتوفر وقتك.</p></div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section>
+  <div class="stats">
+    <div class="stat reveal"><h2 class="grad counter" data-target="150">0</h2><p>مشروع منجز</p></div>
+    <div class="stat reveal"><h2 class="grad counter" data-target="98">0</h2><p>% رضا العملاء</p></div>
+    <div class="stat reveal"><h2 class="grad counter" data-target="5">0</h2><p>سنوات خبرة</p></div>
+    <div class="stat reveal"><h2 class="grad counter" data-target="1200">0</h2><p>كوب قهوة ☕</p></div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <h2 class="title reveal"><span class="grad">مهاراتي</span></h2>
+  <div style="max-width:750px;margin:auto">
+    <div class="skill reveal"><div class="skill-head"><span>HTML & CSS</span><span>95%</span></div><div class="bar"><div class="fill" data-w="95"></div></div></div>
+    <div class="skill reveal"><div class="skill-head"><span>JavaScript</span><span>90%</span></div><div class="bar"><div class="fill" data-w="90"></div></div></div>
+    <div class="skill reveal"><div class="skill-head"><span>React</span><span>85%</span></div><div class="bar"><div class="fill" data-w="85"></div></div></div>
+    <div class="skill reveal"><div class="skill-head"><span>Python</span><span>80%</span></div><div class="bar"><div class="fill" data-w="80"></div></div></div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h2 class="title reveal">تواصل <span class="grad">معي</span></h2>
+  <form class="reveal" id="form">
+    <input type="text" placeholder="اسمك" required>
+    <input type="email" placeholder="بريدك الإلكتروني" required>
+    <textarea rows="5" placeholder="رسالتك..." required></textarea>
+    <button class="btn" type="submit">إرسال 🚀</button>
+  </form>
+</section>
+
+<footer>صُنع بـ ❤️ — © <span id="year"></span> جميع الحقوق محفوظة</footer>
+
+<button id="top">↑</button>
+<div id="toast">✅ تم إرسال رسالتك بنجاح!</div>
+
 <script>
-const planets = [
-  ['عطارد', 'الأقرب إلى الشمس', 'سطحه الصخري مليء بالفوهات، ويشبه سطح القمر.', '#d5c7b9', '#645349', 'صخري'],
-  ['الزهرة', 'تحت غطاء من السحب', 'يحبس غلافه الجوي الكثيف الحرارة، ما يجعله أشد الكواكب حرارة.', '#ffcf81', '#a05632', 'صخري'],
-  ['الأرض', 'الكوكب الأزرق', 'تغطي المحيطات معظم سطحه، وهو عالمنا الوحيد المعروف بوجود الحياة.', '#78c8ff', '#173ba5', 'صخري'],
-  ['المريخ', 'الكوكب الأحمر', 'تعطي أكاسيد الحديد غباره لونه الأحمر المميز.', '#ff9873', '#8b2f28', 'صخري'],
-  ['المشتري', 'عملاق النظام الشمسي', 'أكبر كواكب النظام الشمسي، وتظهر في غلافه الجوي عاصفة تُعرف بالبقعة الحمراء العظيمة.', '#ffc69c', '#8d5144', 'عملاق غازي'],
-  ['زحل', 'سيد الحلقات', 'تتكون حلقاته المميزة من قطع جليدية وصخرية تتفاوت في الحجم.', '#fbe0a0', '#8a673c', 'عملاق غازي'],
-  ['أورانوس', 'يدور على جانبه', 'يميل محور دورانه بشدة، فيبدو كأنه يتدحرج حول الشمس.', '#a6f5ea', '#267b89', 'عملاق جليدي'],
-  ['نبتون', 'في أقاصي النظام الشمسي', 'أبعد الكواكب عن الشمس، وتهب في غلافه الجوي رياح شديدة السرعة.', '#8b9fff', '#292997', 'عملاق جليدي']
-];
-const el = id => document.getElementById(id);
-const globe = document.querySelector('.planet');
-const buttons = planets.map(([name], i) => {
-  const button = document.createElement('button');
-  button.textContent = name;
-  button.addEventListener('click', () => select(i));
-  el('picker').append(button);
-  return button;
+/* ===== Particles ===== */
+const c=document.getElementById('particles'),ctx=c.getContext('2d');
+let W,H,pts=[],mouse={x:null,y:null};
+function resize(){W=c.width=innerWidth;H=c.height=innerHeight}
+resize();addEventListener('resize',resize);
+addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+const N=Math.min(110,Math.floor(innerWidth/12));
+for(let i=0;i<N;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.7,vy:(Math.random()-.5)*.7,r:Math.random()*2+1});
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const light=document.body.classList.contains('light');
+  pts.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    if(mouse.x){const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);
+      if(d<120){p.x+=dx/d*2;p.y+=dy/d*2}}
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=light?'rgba(124,58,237,.6)':'rgba(6,182,212,.8)';ctx.fill();
+    for(let j=i+1;j<pts.length;j++){
+      const q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<130){ctx.strokeStyle=`rgba(124,58,237,${1-d/130})`;ctx.lineWidth=.6;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+    }
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== Typing ===== */
+const words=['أصمم مواقع مذهلة ✨','أبني تطبيقات قوية 💪','أحوّل الأفكار إلى واقع 🚀'];
+let wi=0,ci=0,del=false;const tEl=document.getElementById('typed');
+(function type(){
+  const w=words[wi];
+  tEl.textContent=w.substring(0,ci);
+  if(!del&&ci<w.length){ci++;setTimeout(type,90)}
+  else if(del&&ci>0){ci--;setTimeout(type,45)}
+  else{del=!del;if(!del)wi=(wi+1)%words.length;setTimeout(type,del?1600:300)}
+})();
+
+/* ===== Theme ===== */
+const tb=document.getElementById('themeBtn');
+if(localStorage.theme==='light'){document.body.classList.add('light');tb.textContent='☀️'}
+tb.onclick=()=>{document.body.classList.toggle('light');
+  const l=document.body.classList.contains('light');tb.textContent=l?'☀️':'🌙';localStorage.theme=l?'light':'dark'};
+
+/* ===== Reveal + Counters + Skills ===== */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  e.target.classList.add('show');
+  e.target.querySelectorAll('.counter').forEach(cn=>{
+    const t=+cn.dataset.target;let n=0;const s=Math.ceil(t/80);
+    const iv=setInterval(()=>{n+=s;if(n>=t){n=t;clearInterval(iv)}cn.textContent=n},20)});
+  e.target.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%');
+  io.unobserve(e.target);
+}),{threshold:.2});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ===== 3D Tilt ===== */
+document.querySelectorAll('.card').forEach(cd=>{
+  cd.addEventListener('mousemove',e=>{const r=cd.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    cd.style.transform=`perspective(800px) rotateY(${x*15}deg) rotateX(${-y*15}deg) scale(1.04)`});
+  cd.addEventListener('mouseleave',()=>cd.style.transform='');
 });
 
-function select(i) {
-  const [name, tag, description, accent, shade, kind] = planets[i];
-  Object.entries({
-    name, tag, description, kind,
-    order: new Intl.NumberFormat('ar').format(i + 1)
-  }).forEach(([id, value]) => { el(id).textContent = value; });
-  document.documentElement.style.setProperty('--accent', accent);
-  document.documentElement.style.setProperty('--shade', shade);
-  buttons.forEach((button, j) => button.setAttribute('aria-pressed', String(i === j)));
-  globe.classList.remove('arrive');
-  void globe.offsetWidth;
-  globe.classList.add('arrive');
-}
-select(2);
+/* ===== Scroll progress + top btn ===== */
+const top=document.getElementById('top'),prog=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-innerHeight;
+  prog.style.width=(scrollY/h*100)+'%';
+  top.classList.toggle('show',scrollY>500);
+});
+top.onclick=()=>scrollTo({top:0,behavior:'smooth'});
 
-const sky = el('sky');
-const ctx = sky.getContext('2d');
-const stars = Array.from({ length: 180 }, () =>
-  [Math.random(), Math.random(), .3 + Math.random() * 1.1, .15 + Math.random() * .65]
-);
-function drawSky() {
-  const { width, height } = sky.getBoundingClientRect();
-  const scale = Math.min(devicePixelRatio || 1, 2);
-  sky.width = width * scale;
-  sky.height = height * scale;
-  ctx.scale(scale, scale);
-  for (const [x, y, r, opacity] of stars) {
-    ctx.fillStyle = `rgba(220,232,255,${opacity})`;
-    ctx.beginPath();
-    ctx.arc(x * width, y * height, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-drawSky();
-addEventListener('resize', drawSky);
+/* ===== Form ===== */
+document.getElementById('form').onsubmit=e=>{e.preventDefault();e.target.reset();
+  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)};
+document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
